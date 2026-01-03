@@ -16,7 +16,7 @@ export const addColorController = async (req: Request, res: Response) => {
   if (!data.name || !data.image)
     return res
       .status(400)
-      .json(handleGlobalResponse(400, {}, "name and image cannot be empty"));
+      .json(handleGlobalResponse(400, null, "name and image cannot be empty"));
   const columns = Object.keys(data);
   const values = Object.values(data);
   const placeholders = columns.map(() => "?").join(", ");
@@ -46,7 +46,7 @@ const {columns, values} = convertColumnValue(data)
     await db.execute(sql, [...values, params.id]);
     res.status(200).json(handleGlobalResponse(200, {}, "Success edit color"));
   } catch (e) {
-    res.status(500).json(handleGlobalResponse(500, {}, "Failed update color"));
+    res.status(500).json(handleGlobalResponse(500, null, "Failed update color"));
   }
 };
 

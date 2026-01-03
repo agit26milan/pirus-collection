@@ -45,7 +45,7 @@ const {columns, values} = convertColumnValue(data)
     await db.execute(sql, [...values, params.id]);
     res.status(200).json(handleGlobalResponse(200, {}, "Success edit color"));
   } catch (e) {
-    res.status(500).json(handleGlobalResponse(500, {}, "Failed update color"));
+    res.status(500).json(handleGlobalResponse(500, null, "Failed update color"));
   }
 };
 
