@@ -7,6 +7,7 @@ interface ProductData {
   warna_id: string | number;
   name: string;
   deskripsi?: string;
+  category_id: number;
 }
 
 export async function addProductService(items: ProductData) {
@@ -25,8 +26,13 @@ export async function addProductService(items: ProductData) {
       [items.warna_id]
     );
     const colorName = color[0].name;
+    const [category]: any = await conn.execute(
+      "SELECT name from categories WHERE id = ?",
+      [items.category_id]
+    );
+    const categoryName = category[0].name;
     await conn.execute(
-      "INSERT INTO produk (brand_id, warna_id, name, brand_name, color_name, deskripsi) VALUES (?, ?, ?, ?, ?, ?)",
+      "INSERT INTO produk (brand_id, warna_id, name, brand_name, color_name, deskripsi, category_id, category_name) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
       [
         Number(items.brand_id),
         Number(items.warna_id),
@@ -34,6 +40,8 @@ export async function addProductService(items: ProductData) {
         brandName,
         colorName,
         items.deskripsi || "",
+        items.category_id,
+        categoryName,
       ]
     );
     await conn.commit();
@@ -61,27 +69,38 @@ export async function editProductService(
     await conn.beginTransaction();
     let brandName;
     let colorName;
+    let categoryName;
     if (items.brand_id) {
       const [brands]: any = await conn.execute(
         "SELECT name FROM brand WHERE id = ?",
         [items.brand_id]
       );
-      brandName = brands?.[0].name;
+      brandName = brands?.[0]?.name;
     }
     if (items.warna_id) {
       const [color]: any = await conn.execute(
         "SELECT name FROM warna WHERE id = ?",
         [items.warna_id]
       );
-      colorName = color?.[0].name;
+      colorName = color?.[0]?.name;
+    }
+    if (items.category_id) {
+      const [category]: any = await conn.execute(
+        "SELECT name FROM categories WHERE id = ?",
+        [items.category_id]
+      );
+      categoryName = category?.[0]?.name;
     }
 
-    let body:any = { ...items };
-    if(brandName) {
-        body = {...body, brand_name: brandName}
+    let body: any = { ...items };
+    if (brandName) {
+      body = { ...body, brand_name: brandName };
     }
-    if(colorName) {
-        body = {...body, color_name: colorName}
+    if (colorName) {
+      body = { ...body, color_name: colorName };
+    }
+    if (categoryName) {
+      body = { ...body, category_name: categoryName };
     }
     const { columns, values } = convertColumnValue(body);
     await conn.execute(
@@ -97,6 +116,7 @@ export async function editProductService(
       message: "Success edit product",
     };
   } catch (e) {
+    console.log(e, 'emanak')
     return {
       status: 500,
       data: null,

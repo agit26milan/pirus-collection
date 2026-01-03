@@ -11,9 +11,9 @@ export const getAllProduct = async (req: Request, res: Response) => {
 
 export const addProductController = async (req: Request, res: Response) => {
    try {
-      const {brand_id, warna_id, name, deskripsi} = req.body
-      if(!brand_id || !warna_id || !name) return res.status(400).json(handleGlobalResponse(400, null, 'brandId, warnaId and name is required'))
-      const response = await addProductService({brand_id, warna_id, name, deskripsi})
+      const {brand_id, warna_id, name, deskripsi, category_id} = req.body
+      if(!brand_id || !warna_id || !name || !category_id) return res.status(400).json(handleGlobalResponse(400, null, 'brandId, warnaId, category_id and name is required'))
+      const response = await addProductService({brand_id, warna_id, name, deskripsi, category_id})
       res.status(200).json(response)
    }catch(e) {
        res.status(500).json(handleGlobalResponse(500, null, 'Failed create product'))
@@ -23,8 +23,8 @@ export const addProductController = async (req: Request, res: Response) => {
 export const editProductController = async (req: Request, res: Response) => {
    try {
       const {id} = req.params
-      const {brand_id, warna_id, name, deskripsi} = req.body
-      const response = await editProductService(Number(id), {brand_id, warna_id, name, deskripsi})
+      const {brand_id, warna_id, name, deskripsi, category_id} = req.body
+      const response = await editProductService(Number(id), {brand_id, warna_id, name, deskripsi,category_id})
       res.status(200).json(response)
    }catch(e) {
        res.status(500).json(handleGlobalResponse(500, null, 'Failed create product'))
