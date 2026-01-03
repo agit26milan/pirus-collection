@@ -33,13 +33,13 @@ export const addBrandController = async (req: Request, res: Response) => {
   }
 };
 
-export const editColorController = async (req: Request, res: Response) => {
+export const editBrandController = async (req: Request, res: Response) => {
   let data = req.body;
   const params = req.params;
   const date = new Date();
   data = { ...data, updated_at: date };
 const {columns, values} = convertColumnValue(data)
-  const sql = `UPDATE warna SET ${columns.map((col) => `${col} = ?`).join(", ")}
+  const sql = `UPDATE brand SET ${columns.map((col) => `${col} = ?`).join(", ")}
     WHERE id = ?`;
   try {
     await db.execute(sql, [...values, params.id]);
@@ -49,9 +49,9 @@ const {columns, values} = convertColumnValue(data)
   }
 };
 
-export const removeColorController = async (req: Request, res: Response) => {
+export const removeBrandController = async (req: Request, res: Response) => {
   const params = req.params;
-  const sql = `DELETE FROM warna WHERE id = ?`;
+  const sql = `DELETE FROM brand WHERE id = ?`;
   try {
     await db.execute(sql, [params.id]);
     res.status(200).json(handleGlobalResponse(200, {}, "Success delete color"));
