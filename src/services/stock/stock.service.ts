@@ -5,6 +5,8 @@ export interface IPayloadStock {
   produk_id: string;
   qty: string;
   harga_beli: string;
+  description:string;
+  
 }
 
 export const addStockService = async (
@@ -14,13 +16,13 @@ export const addStockService = async (
     const connection = db.promise();
     await connection.beginTransaction();
     const date = new Date()
-    console.log(payload, "makan");
-    const stockInsert = `INSERT INTO stok_masuk (produk_id, harga_beli, qty, created_date, updated_date) VALUES (?, ?, ?, ?, ?)`;
+    const total_price = Number(payload.qty) * Number(payload.harga_beli)
+    const stockInsert = `INSERT INTO stok_masuk (produk_id, harga_beli, qty, created_date, updated_date, description, total_price) VALUES (?, ?, ?, ?, ?, ?, ?)`;
     const sqlInsert = `INSERT INTO stock_acumulation (product_id, total_stok)
 VALUES (?, ?)
 ON DUPLICATE KEY UPDATE
 total_stok = total_stok + VALUES(total_stok)`;
-    await connection.execute(stockInsert, [payload.produk_id, payload.harga_beli, payload.qty, date, date]);
+    await connection.execute(stockInsert, [payload.produk_id, payload.harga_beli, payload.qty, date, date, payload.description, total_price]);
     await connection.execute(sqlInsert, [payload.produk_id, payload.qty]);
     await connection.commit();
     return {

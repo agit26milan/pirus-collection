@@ -19,7 +19,7 @@ export const getStockController = (req: Request, res: Response) => {
 export const addStockController = async (req: Request, res: Response) => {
   try {
     const body = req.body;
-    const requiredData = ["produk_id", "qty", "harga_beli"];
+    const requiredData = ["produk_id", "qty", "harga_beli", "description"];
     const { isNotValid, emptyState } = validationData(body, requiredData);
     if (isNotValid)
       return res
